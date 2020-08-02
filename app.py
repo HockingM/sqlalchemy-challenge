@@ -125,29 +125,25 @@ def tobs():
     stn_first_date = stn_last_date - dt.timedelta(days=365)
 
     # Query the last 12 months of temperature observation data for this station
-    station_temps = session.query(measurement.tobs, measurement.date).\
+    station_temps = session.query(measurement.tobs).\
         filter(measurement.station == stn_most_temps[0]).\
         filter(measurement.date >= stn_first_date).\
         filter(measurement.date <= stn_last_date).all()
 
     session.close()
 
-    # Create a list of dates and temperature observations (TOBS) for the previous year
+    # Create a list of temperature observations (TOBS) for the previous year
     station_temps_list = list(np.ravel(station_temps))
 
-    # Return JSON list of the dates and temperature observations (TOBS) for the previous year
+    # Return JSON list temperature observations (TOBS) for the previous year
     return jsonify(station_temps_list)
 
-
-@app.route("/api/v1.0/user_dates/<start_date>/<end_date>")
-#@app.route("/api/v1.0/user_dates/<start_date>")
 
 # Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range
 # When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date
 # When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive
-
-def user_dates(start_date = None, end_date = None):
-        
+@app.route("/api/v1.0/user_dates/<start_date>/<end_date>")
+def user_dates(start_date = None, end_date = None):   
     # Create session (link) from Python to the DB
     session = Session(engine)    
 
